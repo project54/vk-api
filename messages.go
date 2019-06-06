@@ -1,6 +1,7 @@
 package vkapi
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -67,7 +68,6 @@ type Message struct {
 	  chat_title_update — обновлено название беседы;
 	  chat_invite_user — приглашен пользователь;
 	  chat_kick_user — исключен пользователь.*/
-
 }
 
 // IsDeleted will return true if the message was deleted (in the Recycle Bin).
@@ -106,6 +106,7 @@ type MessageConfig struct {
 	geo             bool        `json:"-"`
 	lat             float64     `json:"lat"`
 	long            float64     `json:"long"`
+	Keyboard        *Keyboard   `json:"keyboard"`
 }
 
 // SetGeo sets the location.
@@ -150,6 +151,11 @@ func (client *Client) SendMessage(config MessageConfig) (int64, *Error) {
 
 	if config.Attachment != "" {
 		values.Add("attachment", config.Attachment)
+	}
+
+	if config.Keyboard != nil {
+		keyboard, _ := json.Marshal(config.Keyboard)
+		values.Add("keyboard", string(keyboard))
 	}
 
 	res, err := client.Do(NewRequest("messages.send", config.AccessToken, values))
