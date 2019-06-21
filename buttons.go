@@ -11,8 +11,9 @@ type Button struct {
 }
 
 type Action struct {
-	Type  string `json:"type"`
-	Label string `json:"label"`
+	Type    ActionType `json:"type"`
+	Label   string     `json:"label"`
+	Payload string     `json:"payload"`
 }
 
 type ColorButton string
@@ -22,6 +23,13 @@ const (
 	Positive ColorButton = "positive"
 	Default  ColorButton = "default"
 	Primary  ColorButton = "primary"
+)
+
+type ActionType string
+
+const (
+	Text     ActionType = "text"
+	Location ActionType = "location"
 )
 
 func CreateButtons(buttons ...[]Button) [][]Button {
@@ -43,7 +51,7 @@ func CreateButtonsInRow(textAndColorButtons map[string]ColorButton) []Button {
 
 	for text, color := range textAndColorButtons {
 		button := new(Button)
-		button.Action.Type = "text"
+		button.Action.Type = Text
 		button.Action.Label = text
 		button.Color = color
 
